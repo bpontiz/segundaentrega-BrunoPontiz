@@ -1,2 +1,2 @@
-import mongoose from "mongoose";
-import productoSchema from '../dbs/initMongoDB.js';
+import { Schema, model, connect, disconnect } from 'mongoose';
+
