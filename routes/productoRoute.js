@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import productoControlador from '../controladores/productoControlador.js';
-import mongoDBControlador from '../controladores/mongoDBControlador.js';
+import mongoDBControlador from '../controladores/mongoProductoControlador.js';
 const productoMongoContenedor = new mongoDBControlador();
 const productoContenedor = new productoControlador();
 const productoRoute = Router();

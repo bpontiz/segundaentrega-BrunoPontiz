@@ -2,6 +2,8 @@
 
 import { Router } from 'express';
 import carritoControlador from '../controladores/carritoControlador.js';
+import mongoDBControlador from '../controladores/mongoCarritoControlador.js';
+const mongoCarritoContenedor = new mongoDBControlador();
 const carritoContenedor = new carritoControlador();
 const carritoRoute = Router();
 
@@ -10,8 +12,8 @@ carritoRoute.get("/", async (req, res) => {
         const getCarritos = await carritoContenedor.getAll();
         const sinCarritos = "No hay carritos disponibles.";
         getCarritos 
-        ? res.status(200).json(getCarritos) 
-        : res.status(404).json(sinCarritos);
+            ? res.status(200).json(getCarritos) 
+            : res.status(404).json(sinCarritos);
     }
     catch (err) {
         console.log(err);
@@ -127,6 +129,56 @@ carritoRoute.get("/:id/productos", async (req, res) => {
             res.status(200).json(productos);
         }
     } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+carritoRoute.get("/mongo/documents", async (req, res) => {
+    try {
+        const getDocument = await mongoCarritoContenedor.getDocuments();
+        getDocument
+            ? res.status(200).json(getDocument)
+            : res.status(404).json({ message: "No hay carritos disponibles" });
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+carritoRoute.post("/mongo/documents", async (req, res) => {
+    try {
+        const insertDocument = await mongoCarritoContenedor.insertDocument(req.body);
+        res.status(201).json({
+            message: "Carrito creado con éxito",
+            carrito: insertDocument,
+        });
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+carritoRoute.delete("/mongo/:code", async (req, res) => {
+    try {
+        const deleteDocumentByCode = await mongoCarritoContenedor.deleteDocumentByCode(req.params.code);
+        deleteDocumentByCode
+            ? res.status(200).json({ message: "Carrito borrado con éxito", code: req.params.code })
+            : res.status(404).json({ message: "Carrito no encontrado: code "  + req.params.code });
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+carritoRoute.put("/mongo/:code", async (req, res) => {
+    try {
+        const updateDocumentByCode = await mongoCarritoContenedor.updateDocumentByCode(req.params.code, req.body);
+        res.status(200).json({
+            message: "Carrito actualizado con éxito",
+            carrito: updateDocumentByCode,
+        });
+    }
+    catch (err) {
         res.status(500).json({ message: err.message });
     }
 });

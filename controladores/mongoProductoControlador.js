@@ -1,6 +1,7 @@
 import { Schema, model, connect, disconnect } from 'mongoose';
 
 const nombreBaseDeDatos = 'segundaentrega';
+
 const productoSchema = new Schema({
     codigo: {type: String, required: true},
     descripcion: {type: String, required: true},
@@ -9,6 +10,7 @@ const productoSchema = new Schema({
     precio: {type: Number, required: true},
     stock: {type: Number, required: true}
 });
+
 connect(`mongodb://localhost:27017/${nombreBaseDeDatos}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -18,7 +20,8 @@ connect(`mongodb://localhost:27017/${nombreBaseDeDatos}`, {
 const ProductoDAO = model('productos', productoSchema);
 
 class mongoDBControlador {
-    constructor(){
+    constructor(documento){
+        this.documento = documento;
     }
 
     async getDocuments() {
